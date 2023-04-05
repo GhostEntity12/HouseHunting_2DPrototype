@@ -11,11 +11,6 @@ public class Bullet : MonoBehaviour
     float speed = 1;
     [SerializeField]
     int damage = 5;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -30,16 +25,16 @@ public class Bullet : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		transform.position += transform.forward * Time.deltaTime * speed;
+		transform.position += speed * Time.deltaTime * transform.forward;
 	}
 
 	private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Hit?");
         if (other.TryGetComponent(out Furniture furniture))
         {
-            Debug.Log("Hit!");
             furniture.TakeDamage(damage);
+            // Repool instead
+            Destroy(gameObject);
         }
     }
 }

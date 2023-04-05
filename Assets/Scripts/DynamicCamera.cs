@@ -34,12 +34,12 @@ public class DynamicCamera : MonoBehaviour
             }
             if (player.MovementVector.magnitude > 0.01f)
             {
-
+                targetCamPos = player.transform.position + player.MovementVector;
             }
 
         }
 
-        Debug.Log(cols.Length);
+        //Debug.Log(cols.Length);
         targetCamPos = new Vector3(targetCamPos.x, cacheY, targetCamPos.z);
     }
 

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,16 +16,21 @@ public class Furniture : MonoBehaviour
 
 	NavMeshAgent agent;
 
+	[SerializeField]
+	Transform furnitureDrop;
+	Rigidbody dropRb;
+
 	private void Awake()
 	{
 		agent = GetComponent<NavMeshAgent>();
 		destination = transform.position;
+		dropRb = furnitureDrop.GetComponent<Rigidbody>();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (Vector3.Distance(transform.position, destination) < delta)
+		if (Vector3.Distance(transform.position, destination) <= delta)
 		{
 			destination = GetNewDestination();
 			agent.SetDestination(destination);
@@ -37,7 +40,7 @@ public class Furniture : MonoBehaviour
 	Vector3 GetNewDestination()
 	{
 		Vector2 relativeWander = (Random.insideUnitCircle * wanderRange);
-		NavMesh.FindClosestEdge(transform.position + new Vector3(relativeWander.x, 0, relativeWander.y), out NavMeshHit hit, NavMesh.AllAreas);
+		NavMesh.SamplePosition(transform.position + new Vector3(relativeWander.x, 0, relativeWander.y), out NavMeshHit hit, wanderRange, NavMesh.AllAreas);
 		return hit.position;
 	}
 
@@ -55,7 +58,23 @@ public class Furniture : MonoBehaviour
 	/// </summary>
 	void Die()
 	{
+		Drop();
 		Destroy(gameObject);
+	}
+
+	void Drop()
+	{
+		furnitureDrop.SetParent(null);
+		furnitureDrop.gameObject.SetActive(true);
+		dropRb.AddForce(Vector3.up * 2.5f, ForceMode.Impulse);
+	}
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.red;
+		Gizmos.DrawLine(transform.position, destination);
+		Gizmos.color = Color.green;
+		Gizmos.DrawSphere(destination, 0.1f);
 	}
 }
 

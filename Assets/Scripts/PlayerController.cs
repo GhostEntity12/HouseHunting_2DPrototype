@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 MovementVector => movementVector;
 
+    readonly List<FurnitureInfo> collectedFurniture = new();
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -29,8 +31,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void CollectFurniture(FurnitureInfo furniture)
+    {
+        collectedFurniture.Add(furniture);
+    }
+
     void FixedUpdate()
     {
-        rb.MovePosition(transform.position + (movementVector * speed * Time.deltaTime));
+        rb.MovePosition(transform.position + (speed * Time.deltaTime * movementVector));
     }
 }
